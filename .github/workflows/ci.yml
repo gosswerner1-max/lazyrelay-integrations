@@ -1,0 +1,87 @@
+name: CI
+
+# Public mirror of the LazyRelay integration packages (MCP server, SDK, n8n node, Zapier app).
+# The source of truth is a private repository; changes are copied here and released from here.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  mcp-server:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: mcp-server/package-lock.json
+      - working-directory: mcp-server
+        run: npm ci
+      - working-directory: mcp-server
+        run: npm run build
+
+  sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: sdk/package-lock.json
+      - working-directory: sdk
+        run: npm ci
+      - working-directory: sdk
+        run: npm run build
+      - working-directory: sdk
+        run: npm test
+
+  n8n-node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: n8n-nodes-lazyrelay/package-lock.json
+      - working-directory: n8n-nodes-lazyrelay
+        run: npm ci
+      - working-directory: n8n-nodes-lazyrelay
+        run: npm run build
+      - working-directory: n8n-nodes-lazyrelay
+        run: npm test
+
+  zapier-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: zapier-integration/package-lock.json
+      - working-directory: zapier-integration
+        run: npm ci
+      # The live test suite needs a real API key and is run by hand, never in CI.
+      - name: Syntax-check every .js file (parse only, no execution, no credentials)
+        working-directory: zapier-integration
+        run: find . -name "*.js" -not -path "./node_modules/*" -print0 | xargs -0 -n1 node --check
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
