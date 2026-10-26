@@ -1,5 +1,8 @@
 # Publishing @lazyrelay/mcp-server
 
+> **Moved 2026-10-26:** releases run from the public repo https://github.com/gosswerner1-max/lazyrelay-integrations. The private source repo copies changes there with `node scripts/sync-public.mjs`; the workflow named below and the npm trusted-publisher setting live on the public repo.
+
+
 **Read this before running `npm publish` by hand. There is a working, automated way to do this — use it, don't reach for a stored token.**
 
 ## The working method (use this)
