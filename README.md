@@ -14,3 +14,5 @@ This repository holds only the integration code. The LazyRelay service itself is
 These folders are kept in step with the private source by a copy step, and the packages are released from here.
 
 Setup guides: https://lazyrelay.com/mcp/ and https://lazyrelay.com/docs
+
+License: MIT, see the LICENSE file. This applies to the integration code in this repository only, not to the LazyRelay service.
