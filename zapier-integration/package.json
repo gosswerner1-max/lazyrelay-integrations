@@ -1,6 +1,7 @@
 {
   "name": "lazyrelay-zapier-integration",
   "version": "1.0.0",
+  "license": "MIT",
   "description": "LazyRelay integration for the Zapier platform — trigger on published posts, schedule new posts.",
   "main": "index.js",
   "scripts": {
